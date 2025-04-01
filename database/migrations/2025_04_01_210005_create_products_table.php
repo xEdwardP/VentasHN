@@ -19,7 +19,6 @@ return new class extends Migration
             $table->integer('quantity')->default(0);
             $table->decimal('purchase_price', 18,2)->default(0);
             $table->decimal('selling_price', 18,2)->default(0);
-            $table->boolean('active')->default(true);
             $table->foreignId('category_id')->constrained('categories');
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('supplier_id')->constrained('suppliers');
