@@ -10,7 +10,7 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
+                <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="{{route('new-sale')}}">
                     <i class="fa-solid fa-cash-register"></i><span>Ventas</span><i
                         class="bi bi-chevron-down ms-auto"></i>
                 </a>
@@ -29,14 +29,14 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#">
+                <a class="nav-link collapsed" href="{{route('categories')}}">
                     <i class="fa-solid fa-list"></i>
                     <span>Categorias</span>
                 </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#">
+                <a class="nav-link collapsed" href="{{route('customers')}}">
                     <i class="fa-solid fa-users"></i>
                     <span>Clientes</span>
                 </a>
@@ -45,12 +45,12 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#">
                     <i class="fa-solid fa-file-invoice-dollar"></i>
-                    <span>Compras</span>
+                    <span>Graficos</span>
                 </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#">
+                <a class="nav-link collapsed" href="{{route('suppliers')}}">
                     <i class="fa-solid fa-truck"></i>
                     <span>Proveedores</span>
                 </a>
@@ -77,7 +77,7 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#">
+                <a class="nav-link collapsed" href="{{route('users')}}">
                     <i class="fa-solid fa-circle-user"></i>
                     <span>Usuarios</span>
                 </a>
