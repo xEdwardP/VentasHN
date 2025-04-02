@@ -63,7 +63,7 @@
                 </a>
                 <ul id="productos-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="#">
+                        <a href="{{route('products')}}">
                             <i class="bi bi-circle"></i><span>Administrar productos</span>
                         </a>
                     </li>
