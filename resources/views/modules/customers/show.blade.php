@@ -21,25 +21,38 @@
                                         <th class="text-center">Documento</th>
                                         <th class="text-center">Nombre</th>
                                         <th class="text-center">Tipo de Cliente</th>
-                                        <th class="text-center">Ciudad</th>
+                                        <th class="text-center">País</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="text-center">
-                                        <td>{{ $items->document }}</td>
-                                        <td>{{ $items->name }}</td>
-                                        <td>{{ $items->type }}</td>
-                                        <td>{{ $items->country }}</td>
-                                    </tr>
+                                    @if ($items)
+                                        <tr class="text-center">
+                                            <td>{{ $items->document }}</td>
+                                            <td>{{ $items->name }}</td>
+                                            <td>{{ $items->type }}</td>
+                                            <td>{{ $items->country }}</td>
+                                        </tr>
+                                    @else
+                                        <tr>
+                                            <td colspan="4" class="text-center">No hay datos disponibles</td>
+                                        </tr>
+                                    @endif
                                 </tbody>
                             </table>
+
                             <hr>
-                            <form action="{{ route('customers.destroy', $items->id) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-danger">Eliminar Clientes</button>
-                                <a href="{{ route('customers') }}" class="btn btn-info">Cancelar</a>
-                            </form>
+
+                            @if ($items)
+                                <form action="{{ route('customers.destroy', $items->id) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-danger">Eliminar Cliente</button>
+                                    <a href="{{ route('customers') }}" class="btn btn-info">Cancelar</a>
+                                </form>
+                            @else
+                                <a href="{{ route('customers') }}" class="btn btn-info">Volver</a>
+                            @endif
+
                         </div>
                     </div>
                 </div>

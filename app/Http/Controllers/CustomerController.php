@@ -2,10 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
 use App\Models\Customer;
-use App\Models\Product;
-use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,10 +11,7 @@ class CustomerController extends Controller
     public function index()
     {
         $title = "Clientes";
-        $items = Customer::select(
-            'customers.*'
-        )
-            ->get();
+        $items = Customer::all( );
 
         return view('modules.customers.index', compact('title', 'items'));
     }
@@ -37,7 +31,7 @@ class CustomerController extends Controller
             $item->type = $request->type;
             $item->country = $request->country;
             $item->city = $request->city;
-            $item->id = Auth::user()->id;
+          //  $item->user_id = Auth::user()->id;
             $item->save();
             return to_route('customers')->with('success', 'Cliente creado exitosamente!');
         } catch (\Throwable $th) {
@@ -45,34 +39,36 @@ class CustomerController extends Controller
         }
     }
 
-    public function show(string $id)
+    public function show(string $document)
     {
         $title = "Eliminar Cliente";
-        $items = Customer::select(
-            'customers.*'
-        )
-            ->where('customers.id', $id)
-            ->first();
+        $items = Customer::where('document', $document)->first(); 
+        if (!$items) {
+            return redirect()->route('customers')->with('error', 'Cliente no encontrado.');
+        }
         return view('modules.customers.show', compact('title', 'items'));
     }
 
-    public function edit(string $id)
+    public function edit(string $document)
     {
         $title = "Editar cliente";
-        $item = Customer::find($id);
+        $item = Customer::where('document', $document)->firstOrFail();
+        if (!$item) {
+            return redirect()->route('customers')->with('error', 'Cliente no encontrado.');
+        }
         return view('modules.customers.edit', compact('title', 'item'));
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $document)
     {
         try {
-            $item = Customer::find($id);
+            $item = Customer::where('document', $document)->firstOrFail();
             $item->document = $request->document;
             $item->name = $request->name;
             $item->type = $request->type;
             $item->country = $request->country;
             $item->city = $request->city;
-            $item->id = Auth::user()->id;
+          //  $item->user_id = Auth::user()->id;
             $item->save();
             return to_route('customers')->with('success', 'Cliente actualizado exitosamente!!');
         } catch (\Throwable $th) {
