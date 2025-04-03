@@ -16,12 +16,12 @@
                 </a>
                 <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="#">
+                        <a href="{{ route('new-sale') }}">
                             <i class="bi bi-circle"></i><span>Vender Productos</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('sale-details') }}">
                             <i class="bi bi-circle"></i><span>Consultar Ventas</span>
                         </a>
                     </li>
@@ -63,7 +63,7 @@
                 </a>
                 <ul id="productos-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="{{route('products')}}">
+                        <a href="{{ route('products') }}">
                             <i class="bi bi-circle"></i><span>Administrar productos</span>
                         </a>
                     </li>
