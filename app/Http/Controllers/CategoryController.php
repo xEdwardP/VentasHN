@@ -12,7 +12,9 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        $title = "Categorias";
+        
+        return view ('modules.categories.index', compact('title'));
     }
 
     /**

@@ -12,7 +12,9 @@ class SupplierController extends Controller
      */
     public function index()
     {
-        //
+        $title = "Proveedores";
+        
+        return view ('modules.suppliers.index', compact('title'));
     }
 
     /**

@@ -12,7 +12,9 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        //
+        $title = "Clientes";
+        
+        return view ('modules.customers.index', compact('title'));
     }
 
     /**

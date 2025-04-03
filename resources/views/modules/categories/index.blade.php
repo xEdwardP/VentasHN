@@ -6,7 +6,7 @@
     <main id="main" class="main">
 
         <div class="pagetitle">
-            <h1>Usuarios</h1>
+            <h1>Categorias</h1>
         </div>
 
         <section class="section">

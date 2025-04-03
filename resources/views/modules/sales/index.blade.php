@@ -125,7 +125,6 @@
                             @else
                                 <p>No tengo contenido</p>
                             @endif
-
                         </div>
                     </div>
                 </div>
