@@ -14,18 +14,52 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Administar</h5>
-                            {{-- Encabezado --}}
+                            <h5 class="card-title">Administar Clientes</h5>
                             <div class="row">
                                 <div class="col-12 text-end">
-                                    <a href="#" class="btn btn-primary">
+                                    <a href="{{ route('customers.create') }}" class="btn btn-primary">
                                         <i class="fa-solid fa-circle-plus"></i>
-                                        <span class="d-none d-md-inline">Nuevo</span>
+                                        <span class="d-none d-md-inline">Nuevo Cliente</span>
                                     </a>
                                 </div>
                             </div>
                             <hr>
-                            {{-- tabla --}}
+                            <div class="col-12 table-responsive">
+                                <table class="table table-sm datatable">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">Documento</th>
+                                            <th class="text-center">Nombre</th>
+                                            <th class="text-center">Tipo de Cliente</th>
+                                            <th class="text-center">Pais</th>
+                                            <th class="text-center">Ciudad</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($items as $item)
+                                            <tr class="text-center">
+                                                <td>{{ $item->document }}</td>
+                                                <td>{{ $item->name }}</td>
+                                                <td>{{ $item->type }}</td>
+                                                <td class="text-center">{{ $item->country }}</td>
+                                                <td class="text-center">L {{ $item->city }}</td>
+                                                <td>
+                                                    <a href="{{ route('customers.edit', $item->document) }}"
+                                                        class="btn btn-sm btn-warning">
+                                                        <i class="fa-solid fa-pen-to-square"></i>
+                                                        <span class="d-none d-md-inline">Editar</span>
+                                                    </a>
+                                                    <a href="{{ route('customers.show', $item->document) }}"
+                                                        class="btn btn-sm btn-danger">
+                                                        <i class="fa-solid fa-trash-can"></i>
+                                                        <span class="d-none d-md-inline">Eliminar</span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
