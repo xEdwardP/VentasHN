@@ -27,10 +27,14 @@ Route::prefix('sales')->middleware('auth')->group(function(){
     Route::get('/add-cart/{id_product}', [SaleController::class, 'addCart'])->name('sales.add.cart');
     Route::get('/delete-cart', [SaleController::class, 'deleteCart'])->name('sales.delete.cart');
     Route::get('/remove-cart/{id_product}', [SaleController::class, 'removeCart'])->name('sales.remove.cart');
+    Route::post('/make-sale', [SaleController::class, 'makeSale'])->name('sales.make.sale');
 });
 
 Route::prefix('salesdetails')->middleware('auth')->group(function(){
-    Route::get('/detalle-venta', [SaleDetailController::class, 'index'])->name('sale-details');
+    Route::get('/sale-detail', [SaleDetailController::class, 'index'])->name('sale-details');
+    Route::get('/view_details/{id_sale}', [SaleDetailController::class, 'view_details'])->name('detail.view.detail');
+    Route::delete('/revoke/{id_sale}', [SaleDetailController::class, 'revokeSale'])->name('detail.revoke');
+    Route::get('/ticket/{id_sale}', [SaleDetailController::class, 'createTicket'])->name('detail.ticket');
 });
 
 Route::prefix('categories')->middleware('auth')->group(function(){

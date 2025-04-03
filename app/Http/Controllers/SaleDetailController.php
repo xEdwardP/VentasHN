@@ -2,64 +2,97 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
+use App\Models\Sale;
 use App\Models\Sale_Detail;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SaleDetailController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $title = "Detalles de Ventas";
+        $items = Sale::select(
+            'sales.*',
+            'users.name as user_name'
+        )
+            ->join('users', 'sales.user_id', '=', 'users.id')
+            ->orderBy('sales.created_at', 'desc')
+            ->get();
+        return view('modules.sales_details.index', compact('title', "items"));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function view_details($id)
     {
-        //
+        $title = "Detalle de venta";
+        $sale = Sale::select(
+            'sales.*',
+            'users.name as user_name'
+        )
+            ->join('users', 'sales.user_id', '=', 'users.id')
+            ->where('sales.id', $id)
+            ->firstOrFail();
+
+        $details = Sale_Detail::select(
+            'sale_details.*',
+            'products.name as product_name'
+        )
+            ->join('products', 'sale_details.product_id', '=', 'products.id')
+            ->where('sale_id', $id)
+            ->get();
+
+        return view('modules.sales_details.sale_details', compact('title', 'sale', 'details'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function revokeSale($id)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $details = Sale_Detail::select(
+                'product_id',
+                'quantity'
+            )
+                ->where('sale_id', $id)
+                ->get();
+
+            foreach ($details as $detail) {
+                Product::where('id', $detail->product_id)
+                    ->increment('quantity', $detail->quantity);
+            }
+
+            Sale_Detail::where('sale_id', $id)->delete();
+            Sale::where('id', $id)->delete();
+
+            DB::commit();
+            return to_route('sale-details')->with('success', 'Revocacion de venta exitosa!');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return to_route('sale-details')->with('error', 'No se pudo revocar la venta!');
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Sale_Detail $sale_Detail)
-    {
-        //
-    }
+    public function createTicket($id){
+        $sale = Sale::select(
+            'sales.*',
+            'users.name as user_name'
+        )
+        ->join('users', 'sales.user_id', '=', 'users.id')
+        ->where('sales.id', $id)
+        ->firstOrFail();
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Sale_Detail $sale_Detail)
-    {
-        //
-    }
+        $details = Sale_Detail::select(
+            'sale_details.*',
+            'products.name as product_name'
+        )
+        ->join('products', 'sale_details.product_id', '=', 'products.id')
+        ->where('sale_id', $id)
+        ->get();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Sale_Detail $sale_Detail)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Sale_Detail $sale_Detail)
-    {
-        //
+        //genrara el pdf
+        $pdf = Pdf::loadView("modules.sales_details.ticket", compact('sale','details'));
+        //descargar el pdf
+        return $pdf->stream("ticket_compra_{$sale->id}.pdf");
     }
 }
