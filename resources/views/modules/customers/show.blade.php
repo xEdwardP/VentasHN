@@ -22,6 +22,7 @@
                                         <th class="text-center">Nombre</th>
                                         <th class="text-center">Tipo de Cliente</th>
                                         <th class="text-center">País</th>
+                                        <th class="text-center">Ciudad</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -31,6 +32,7 @@
                                             <td>{{ $items->name }}</td>
                                             <td>{{ $items->type }}</td>
                                             <td>{{ $items->country }}</td>
+                                            <td>{{ $items->city }}</td>
                                         </tr>
                                     @else
                                         <tr>

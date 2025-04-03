@@ -18,38 +18,50 @@
                             <form action="{{ route('customers.store') }}" method="POST">
                                 @csrf
                                 <div class="row">
-                                    <div class="col-3 mt-1">
+                                    <div class="col-12 mt-1">
                                         <label for="document"><small><strong>DNI</strong></small></label>
-                                        <input type="text" class="form-control form-control-sm" id="document"
-                                            name="document" maxlength="255">
+                                        <input type="number" class="form-control" id="document" name="document" maxlength="13" style="width: 400px" required>
+
                                     </div>
 
-                                    <div class="col-9 mt-1">
+                                    <div class="col-12 mt-1">
                                         <label for="name"><small><strong>Nombre del cliente</strong></small></label>
                                         <input type="text" class="form-control form-control-sm" required name="name"
                                             id="name" maxlength="50">
                                     </div>
                                 </div>
 
-                                <div class="row">
-                                    <div class="col-12 mt-1">
-                                        <label for="type"><small><strong>Tipo de Cliente</strong></small></label>
-                                        <textarea name="type" id="type" cols="20" rows="1" class="form-control form-control-sm"
-                                            maxlength="50"></textarea>
-                                    </div>
+                                <div class="mb-3">
+                                    <label for="type" class="form-label">Tipo de Cliente</label>
+                                    <select class="form-control" id="type" name="type" style="width: 200px" required>
+                                        <option value="mayorista" {{ old('type', $item->type ?? '') == 'mayorista' ? 'selected' : '' }}>Mayorista</option>
+                                        <option value="minorista" {{ old('type', $item->type ?? '') == 'minorista' ? 'selected' : '' }}>Minorista</option>
+                                    </select>
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-4 mt-1">
-                                        <label for="country"><small><strong>Ciudad</strong></small></label>
-                                        <input type="text" class="form-control form-control-sm" id="country"
-                                            name="country" required maxlength="10">
+                                    <div class="mb-3">
+                                        <label for="country" class="form-label">País</label>
+                                        <select class="form-control form-control-sm" id="country" name="country" style="width: 360px" required>
+                                            <option value="Honduras" {{ old('country', $item->country ?? '') == 'Honduras' ? 'selected' : '' }}>Honduras</option>
+                                            <option value="Argentina" {{ old('country', $item->country ?? '') == 'Argentina' ? 'selected' : '' }}>Argentina</option>
+                                            <option value="España" {{ old('country', $item->country ?? '') == 'España' ? 'selected' : '' }}>España</option>
+                                            <option value="Colombia" {{ old('country', $item->country ?? '') == 'Colombia' ? 'selected' : '' }}>Colombia</option>
+                                            <option value="Chile" {{ old('country', $item->country ?? '') == 'Chile' ? 'selected' : '' }}>Chile</option>
+                                            <option value="Perú" {{ old('country', $item->country ?? '') == 'Perú' ? 'selected' : '' }}>Perú</option>
+                                            <option value="Ecuador" {{ old('country', $item->country ?? '') == 'Ecuador' ? 'selected' : '' }}>Ecuador</option>
+                                            <option value="Venezuela" {{ old('country', $item->country ?? '') == 'Venezuela' ? 'selected' : '' }}>Venezuela</option>
+                                            <option value="Uruguay" {{ old('country', $item->country ?? '') == 'Uruguay' ? 'selected' : '' }}>Uruguay</option>
+                                            <option value="Bolivia" {{ old('country', $item->country ?? '') == 'Bolivia' ? 'selected' : '' }}>Bolivia</option>
+                                        </select>
                                     </div>
-                                    <div class="col-4 mt-1">
-                                        <label for="city"><small><strong>Pais</strong></small></label>
+
+                                    <div class="col-12 mt-1">
+                                        <label for="city"><small><strong>Ciudad</strong></small></label>
                                         <input type="text" class="form-control form-control-sm" id="city"
-                                            name="city" required maxlength="12">
+                                            name="city" required maxlength="100" style="width: 360px">
                                     </div>
+                                    
                                    
                                 </div>
 
