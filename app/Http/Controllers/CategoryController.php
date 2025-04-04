@@ -3,65 +3,72 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $title = "Categorias";
-        
-        return view ('modules.categories.index', compact('title'));
+        $items = Category::all();
+        return view('modules.categories.index', compact('title', 'items'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        $title = "Nueva Categoría";
+        return view('modules.categories.create', compact('title'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        try {
+            $item = new Category();
+            $item->user_id = Auth::user()->id;
+            $item->name = $request->name;
+            $item->save();
+            return to_route('categories')->with('success', 'Categoria agregada!');
+        } catch (Exception $e) {
+            return to_route('categorias')->with('error', 'No se pudo guardar!' . $e->getMessage());
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Category $category)
+    public function show(string $id)
     {
-        //
+        $title = "Eliminar Categoría";
+        $item = Category::find($id);
+        return view('modules.categories.show', compact('item', 'title'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Category $category)
+    public function edit(string $id)
     {
-        //
+        $title = "Actualizar Categoría";
+        $item = Category::find($id);
+        return view('modules.categories.edit', compact('item', 'title'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Category $category)
+    public function update(Request $request, string $id)
     {
-        //
+        try {
+            $item = Category::find($id);
+            $item->name = $request->name;
+            $item->save();
+            return to_route('categories')->with('success', 'Categoria actualizada!');
+        } catch (Exception $e) {
+            return to_route('categories')->with('error', 'No se pudo actualizar!' . $e->getMessage());
+        }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Category $category)
+    public function destroy(string $id)
     {
-        //
+        try {
+            $item = Category::find($id);
+            $item->delete();
+            return to_route('categories')->with('success', 'Categoria Eliminada!');
+        } catch (Exception $e) {
+            return to_route('categories')->with('error', 'No se pudo eliminar!' . $e->getMessage());
+        }
     }
 }
