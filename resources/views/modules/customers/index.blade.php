@@ -42,7 +42,7 @@
                                     <tbody>
                                         @foreach ($items as $item)
                                             <tr class="text-center">
-                                                <td>{{ $item->document }}</td>
+                                                <td class="text-center">{{ $item->document }}</td>
                                                 <td>{{ $item->name }}</td>
                                                 <td>{{ $item->type }}</td>
                                                 <td>{{ $item->country }}</td>

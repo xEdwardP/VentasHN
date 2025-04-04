@@ -18,31 +18,30 @@
                             <form action="{{ route('customers.store') }}" method="POST">
                                 @csrf
                                 <div class="row">
-                                    <div class="col-12 mt-1">
+                                    <div class="col-6 mt-2">
                                         <label for="document"><small><strong>DNI</strong></small></label>
-                                        <input type="number" class="form-control" id="document" name="document" maxlength="13" style="width: 400px" required>
-
+                                        <input type="number" class="form-control" id="document" name="document" maxlength="13" required>
                                     </div>
 
-                                    <div class="col-12 mt-1">
+                                    <div class="col-6 mt-2">
                                         <label for="name"><small><strong>Nombre del cliente</strong></small></label>
-                                        <input type="text" class="form-control form-control-sm" required name="name"
-                                            id="name" maxlength="50">
+                                        <input type="text" class="form-control" required name="name"
+                                            id="name" maxlength="150">
                                     </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="type" class="form-label">Tipo de Cliente</label>
-                                    <select class="form-control" id="type" name="type" style="width: 200px" required>
-                                        <option value="mayorista" {{ old('type', $item->type ?? '') == 'mayorista' ? 'selected' : '' }}>Mayorista</option>
-                                        <option value="minorista" {{ old('type', $item->type ?? '') == 'minorista' ? 'selected' : '' }}>Minorista</option>
-                                    </select>
                                 </div>
 
                                 <div class="row">
-                                    <div class="mb-3">
-                                        <label for="country" class="form-label">País</label>
-                                        <select class="form-control form-control-sm" id="country" name="country" style="width: 360px" required>
+                                    <div class="col-4 mt-2">
+                                        <label for="type"><small><strong>Tipo de Cliente</strong></small></label>
+                                        <select class="form-select form-control" id="type" name="type" required>
+                                            <option value="mayorista" {{ old('type', $item->type ?? '') == 'mayorista' ? 'selected' : '' }}>Mayorista</option>
+                                            <option value="minorista" {{ old('type', $item->type ?? '') == 'minorista' ? 'selected' : '' }}>Minorista</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-4 mt-2">
+                                        <label for="country"><small><strong>País</strong></small></label>
+                                        <select class="form-select form-control" id="country" name="country" required>
                                             <option value="Honduras" {{ old('country', $item->country ?? '') == 'Honduras' ? 'selected' : '' }}>Honduras</option>
                                             <option value="Argentina" {{ old('country', $item->country ?? '') == 'Argentina' ? 'selected' : '' }}>Argentina</option>
                                             <option value="España" {{ old('country', $item->country ?? '') == 'España' ? 'selected' : '' }}>España</option>
@@ -56,17 +55,15 @@
                                         </select>
                                     </div>
 
-                                    <div class="col-12 mt-1">
+                                    <div class="col-4 mt-2">
                                         <label for="city"><small><strong>Ciudad</strong></small></label>
-                                        <input type="text" class="form-control form-control-sm" id="city"
-                                            name="city" required maxlength="100" style="width: 360px">
+                                        <input type="text" class="form-control" id="city"
+                                            name="city" required maxlength="100">
                                     </div>
-                                    
-                                   
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-12 my-3 mt-1">
+                                    <div class="col-12 my-3 mt-2">
                                         <hr>
                                         <button class="btn btn-success btn-sm mt-1">Guardar</button>
                                         <a href="{{ route('customers') }}" class="btn btn-warning btn-sm mt-1">Cancelar</a>
