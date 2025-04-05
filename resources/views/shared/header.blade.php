@@ -17,6 +17,7 @@
                         data-bs-toggle="dropdown">
                         {{-- <img src="{{asset('NiceAdmin/assets/img/profile-img.jpg')}}" alt="Profile" class="rounded-circle"> --}}
                         <img src="{{ asset('images/user.jpg') }}" alt="Profile" class="rounded-circle">
+                        {{-- <i class="fa-solid fa-circle-user" alt="Profile" class="rounded-circle"></i> --}}
                         <span class="d-none d-md-block dropdown-toggle ps-2">{{ Auth::user()->email }}</span>
                     </a><!-- End Profile Iamge Icon -->
 
