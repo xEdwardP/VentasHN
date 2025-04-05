@@ -73,7 +73,7 @@
                             </div>
 
                             <div class="credits">
-                                Designed by: Edward J. Pineda</a>
+                                Desarrollado por: <strong><a href="https://github.com/xEdwardP" target="_blank">xEdwardP</a></strong>
                             </div>
 
                         </div>
