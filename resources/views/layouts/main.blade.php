@@ -57,7 +57,7 @@
     <!-- ======= Sidebar ======= -->
     @include('shared.aside')
     <!-- End Sidebar-->
-n
+    
     @yield('content')
 
     <!-- ======= Footer ======= -->
