@@ -51,12 +51,12 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <a class="nav-link collapsed" href="{{ route('graphics') }}">
                         <i class="fa-solid fa-file-invoice-dollar"></i>
                         <span>Graficos</span>
                     </a>
-                </li>
+                </li> --}}
 
                 <li class="nav-item">
                     <a class="nav-link collapsed" href="{{ route('suppliers') }}">

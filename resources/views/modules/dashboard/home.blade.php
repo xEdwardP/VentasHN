@@ -212,6 +212,103 @@
                 </div>
             </div>
         </section>
+
+        <section class="section">
+            <div class="row mb-4">
+                <div class="col-lg-12">
+                    <form method="GET" action="{{ route('home') }}">
+                        <div class="p-3 bg-light border rounded shadow-sm mb-4 d-flex flex-wrap align-items-center gap-4">
+                            <div class="d-flex align-items-center">
+                                <label for="startDate" class="me-2 mb-0 fw-semibold text-secondary">Desde:</label>
+                                <input type="date" id="startDate" name="startDate"
+                                    value="{{ request('startDate') }}" class="form-control form-control-sm">
+                            </div>
+
+                            <div class="d-flex align-items-center">
+                                <label for="endDate" class="me-2 mb-0 fw-semibold text-secondary">Hasta:</label>
+                                <input type="date" id="endDate" name="endDate" value="{{ request('endDate') }}"
+                                    class="form-control form-control-sm">
+                            </div>
+
+                            <div>
+                                <button class="btn btn-info btn-sm d-flex align-items-center" type="submit">
+                                    <i class="bi bi-bar-chart me-2"></i> Filtrar
+                                </button>
+                            </div>
+
+                            <div>
+                                <a href="{{ route('home') }}"
+                                    class="btn btn-outline-secondary btn-sm d-flex align-items-center">
+                                    <i class="bi bi-x-circle me-2"></i> Borrar filtros
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Ventas por mes</h5>
+                            <canvas id="lineChart" style="max-height: 400px;"></canvas>
+                            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Ventas por país</h5>
+                            <canvas id="barChart" style="max-height: 400px;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Top 5 productos más vendidos</h5>
+                            <canvas id="pieChart" style="max-height: 400px;"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Top 5 usuarios por cantidad de ventas</h5>
+                            <canvas id="doughnutChart" style="max-height: 400px;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Top 5 proveedores por cantidad de productos</h5>
+                            <canvas id="barChart2" style="max-height: 400px;"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Clientes con más ventas realizadas</h5>
+                            <div id="barChart3"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
     </main>
 
     <style>
@@ -239,3 +336,253 @@
         }
     </style>
 @endsection
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const ctx = document.getElementById('lineChart').getContext('2d');
+
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {!! json_encode($salesData->pluck('month')) !!},
+                datasets: [{
+                    label: 'Ingresos',
+                    data: {!! json_encode($salesData->pluck('total')) !!},
+                    fill: false,
+                    borderColor: 'rgb(65, 84, 241)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const ctxBar = document.getElementById('barChart').getContext('2d');
+
+        new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: {!! json_encode($countryLabels) !!},
+                datasets: [{
+                    label: 'Ventas por País',
+                    data: {!! json_encode($countryValues) !!},
+                    backgroundColor: [
+                        'rgba(65, 84, 241, 0.7)',
+                        'rgba(78, 94, 243, 0.7)',
+                        'rgba(109, 117, 242, 0.7)',
+                        'rgba(141, 161, 250, 0.7)',
+                        'rgba(170, 181, 246, 0.7)',
+                        'rgba(195, 205, 252, 0.7)',
+                        'rgba(45, 59, 190, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgb(65, 84, 241)',
+                        'rgb(78, 94, 243)',
+                        'rgb(109, 117, 242)',
+                        'rgb(141, 161, 250)',
+                        'rgb(170, 181, 246)',
+                        'rgb(195, 205, 252)',
+                        'rgb(45, 59, 190)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const ctxPie = document.getElementById('pieChart').getContext('2d');
+
+        new Chart(ctxPie, {
+            type: 'pie',
+            data: {
+                labels: {!! json_encode($productLabels) !!},
+                datasets: [{
+                    label: 'Unidades vendidas',
+                    data: {!! json_encode($productValues) !!},
+                    backgroundColor: [
+                        'rgba(65, 84, 241, 0.6)',
+                        'rgba(90, 92, 245, 0.6)',
+                        'rgba(118, 136, 246, 0.6)',
+                        'rgba(167, 180, 250, 0.6)',
+                        'rgba(184, 193, 255, 0.6)'
+                    ],
+                    hoverOffset: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const ctx = document.getElementById('doughnutChart').getContext('2d');
+
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: {!! json_encode($userLabels) !!},
+                datasets: [{
+                    label: 'Cantidad de ventas',
+                    data: {!! json_encode($userValues) !!},
+                    backgroundColor: [
+                        'rgba(65, 84, 241, 0.7)',
+                        'rgba(78, 94, 243, 0.7)',
+                        'rgba(109, 117, 242, 0.7)',
+                        'rgba(141, 161, 250, 0.7)',
+                        'rgba(170, 181, 246, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgb(65, 84, 241)',
+                        'rgb(78, 94, 243)',
+                        'rgb(109, 117, 242)',
+                        'rgb(141, 161, 250)',
+                        'rgb(170, 181, 246)'
+                    ],
+                    borderWidth: 1,
+                    hoverOffset: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+        new Chart(document.querySelector('#barChart2'), {
+            type: 'bar',
+            data: {
+                labels: {!! json_encode($supplierLabels) !!},
+                datasets: [{
+                    label: 'Cantidad de productos',
+                    data: {!! json_encode($supplierValues) !!},
+                    backgroundColor: [
+                        'rgba(65, 84, 241, 0.7)',
+                        'rgba(78, 94, 243, 0.7)',
+                        'rgba(109, 117, 242, 0.7)',
+                        'rgba(141, 161, 250, 0.7)',
+                        'rgba(170, 181, 246, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgb(65, 84, 241)',
+                        'rgb(78, 94, 243)',
+                        'rgb(109, 117, 242)',
+                        'rgb(141, 161, 250)',
+                        'rgb(170, 181, 246)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+        new Chart(document.querySelector('#barChart3'), {
+            type: 'bar',
+            data: {
+                labels: {!! json_encode($customerLabels) !!},
+                datasets: [{
+                    label: 'Cantidad de ventas',
+                    data: {!! json_encode($customerValues) !!},
+                    backgroundColor: [
+                        'rgba(65, 84, 241, 0.7)',
+                        'rgba(78, 94, 243, 0.7)',
+                        'rgba(109, 117, 242, 0.7)',
+                        'rgba(141, 161, 250, 0.7)',
+                        'rgba(170, 181, 246, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgb(65, 84, 241)',
+                        'rgb(78, 94, 243)',
+                        'rgb(109, 117, 242)',
+                        'rgb(141, 161, 250)',
+                        'rgb(170, 181, 246)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        new ApexCharts(document.querySelector("#barChart3"), {
+            series: [{
+                name: 'Cantidad de ventas',
+                data: {!! json_encode($customerValues) !!}
+            }],
+            chart: {
+                type: 'bar',
+                height: 350
+            },
+            plotOptions: {
+                bar: {
+                    borderRadius: 4,
+                    horizontal: true,
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            xaxis: {
+                categories: {!! json_encode($customerLabels) !!}
+            },
+            colors: ['#4154F1']
+        }).render();
+    });
+</script>
