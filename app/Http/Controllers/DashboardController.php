@@ -29,7 +29,6 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        //Inicio
         $startDate = $request->startDate;
         $endDate = $request->endDate;
 
@@ -118,8 +117,6 @@ class DashboardController extends Controller
             ]);
         }
 
-        $topCustomersData = $topCustomers->get();
-
         $topCustomers = DB::table('sales')
             ->join('customers', 'sales.customer_id', '=', 'customers.id')
             ->select('customers.name as customer', DB::raw('COUNT(sales.id) as total'))
@@ -137,9 +134,45 @@ class DashboardController extends Controller
 
         $topCustomersData = $topCustomers->get();
 
+        $categories = DB::table('categories')->pluck('name');
 
+        $ventasSinRTN = DB::table('sale_details')
+            ->join('sales', 'sale_details.sale_id', '=', 'sales.id')
+            ->join('products', 'sale_details.product_id', '=', 'products.id')
+            ->where('sales.customer_id', 1)
+            ->select('products.category_id', DB::raw('SUM(sale_details.quantity) as total'))
+            ->groupBy('products.category_id');
 
-        //Fin
+        $ventasConRTN = DB::table('sale_details')
+            ->join('sales', 'sale_details.sale_id', '=', 'sales.id')
+            ->join('products', 'sale_details.product_id', '=', 'products.id')
+            ->where('sales.customer_id', '!=', 1)
+            ->select('products.category_id', DB::raw('SUM(sale_details.quantity) as total'))
+            ->groupBy('products.category_id');
+
+        if ($startDate && $endDate) {
+            $ventasSinRTN->whereBetween('sales.created_at', [
+                Carbon::parse($startDate)->startOfDay(),
+                Carbon::parse($endDate)->endOfDay()
+            ]);
+            $ventasConRTN->whereBetween('sales.created_at', [
+                Carbon::parse($startDate)->startOfDay(),
+                Carbon::parse($endDate)->endOfDay()
+            ]);
+        }
+
+        $sinRTN = $ventasSinRTN->pluck('total', 'products.category_id');
+        $conRTN = $ventasConRTN->pluck('total', 'products.category_id');
+
+        $labels = [];
+        $dataSinRTN = [];
+        $dataConRTN = [];
+
+        foreach ($categories as $id => $name) {
+            $labels[] = $name;
+            $dataSinRTN[] = $sinRTN[$id] ?? 0;
+            $dataConRTN[] = $conRTN[$id] ?? 0;
+        }
 
         return view("modules.dashboard.home", compact(
             'title',
@@ -164,7 +197,9 @@ class DashboardController extends Controller
             'supplierValues' => $topSuppliersData->pluck('total'),
             'customerLabels' => $topCustomersData->pluck('customer'),
             'customerValues' => $topCustomersData->pluck('total'),
-
+            'radarLabels' => $labels,
+            'radarSinRTN' => $dataSinRTN,
+            'radarConRTN' => $dataConRTN,
         ]);
     }
 }

@@ -156,56 +156,58 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
 
-                        <!-- Recent Sales -->
-                        <div class="col-12">
-                            <div class="card recent-sales shadow-sm">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center mb-4">
-                                        <h5 class="card-title mb-0">Ventas Recientes</h5>
-                                        <a href="{{ route('sale-details') }}" class="btn btn-sm btn-outline-primary">
-                                            Ver Todas <i class="bi bi-arrow-right"></i>
-                                        </a>
-                                    </div>
+            <div class="row">
+                <!-- Recent Sales -->
+                <div class="col-12">
+                    <div class="card recent-sales shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h5 class="card-title mb-0">Ventas Recientes</h5>
+                                <a href="{{ route('sale-details') }}" class="btn btn-sm btn-outline-primary">
+                                    Ver Todas <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </div>
 
-                                    <div class="table-responsive">
-                                        <table class="table table-hover align-middle">
-                                            <thead class="table-light">
-                                                <tr>
-                                                    <th class="text-center text-uppercase small text-muted">#ID</th>
-                                                    <th class="text-center text-uppercase small text-muted">Total</th>
-                                                    <th class="text-center text-uppercase small text-muted">Fecha</th>
-                                                    <th class="text-center text-uppercase small text-muted">Usuario</th>
-                                                    <th class="text-center text-uppercase small text-muted">Acciones</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($recentProducts as $item)
-                                                    <tr>
-                                                        <td class="text-center fw-medium">#{{ $item->id }}</td>
-                                                        <td class="text-center text-success fw-medium">
-                                                            L{{ number_format($item->total, 2) }}
-                                                        </td>
-                                                        <td class="text-center">
-                                                            {{ $item->created_at->format('d M Y H:i') }}
-                                                        </td>
-                                                        <td class="text-center">
-                                                            <span class="badge bg-primary-subtle text-primary">
-                                                                {{ $item->user_name }}
-                                                            </span>
-                                                        </td>
-                                                        <td class="text-center">
-                                                            <a href="{{ route('detail.view.detail', $item->id) }}"
-                                                                class="btn btn-sm btn-outline-info">
-                                                                <i class="bi bi-eye"></i>
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th class="text-center text-uppercase small text-muted">#ID</th>
+                                            <th class="text-center text-uppercase small text-muted">Total</th>
+                                            <th class="text-center text-uppercase small text-muted">Fecha</th>
+                                            <th class="text-center text-uppercase small text-muted">Usuario</th>
+                                            <th class="text-center text-uppercase small text-muted">Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($recentProducts as $item)
+                                            <tr>
+                                                <td class="text-center fw-medium">#{{ $item->id }}</td>
+                                                <td class="text-center text-success fw-medium">
+                                                    L{{ number_format($item->total, 2) }}
+                                                </td>
+                                                <td class="text-center">
+                                                    {{ $item->created_at->format('d M Y H:i') }}
+                                                </td>
+                                                <td class="text-center">
+                                                    <span class="badge bg-primary-subtle text-primary">
+                                                        {{ $item->user_name }}
+                                                    </span>
+                                                </td>
+                                                <td class="text-center">
+                                                    <a href="{{ route('detail.view.detail', $item->id) }}"
+                                                        class="btn btn-sm btn-outline-info">
+                                                        <i class="bi bi-eye"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -301,12 +303,22 @@
                 <div class="col-lg-6">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Clientes con más ventas realizadas</h5>
-                            <div id="barChart3"></div>
+                            <h5 class="card-title">Top 5 clientes por cantidad de ventas</h5>
+                            <canvas id="barChart3" style="max-height: 400px;"></canvas>
                         </div>
                     </div>
                 </div>
+            </div>
 
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Categorías más vendidas (RTN vs Sin RTN)</h5>
+                            <canvas id="radarChart" style="max-height: 400px;"></canvas>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
     </main>
@@ -339,250 +351,190 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-        const ctx = document.getElementById('lineChart').getContext('2d');
+        const chartColors = {
+            background: [
+                'rgba(65, 84, 241, 0.7)',
+                'rgba(78, 94, 243, 0.7)',
+                'rgba(109, 117, 242, 0.7)',
+                'rgba(141, 161, 250, 0.7)',
+                'rgba(170, 181, 246, 0.7)',
+                'rgba(195, 205, 252, 0.7)',
+                'rgba(45, 59, 190, 0.7)'
+            ],
+            border: [
+                'rgb(65, 84, 241)',
+                'rgb(78, 94, 243)',
+                'rgb(109, 117, 242)',
+                'rgb(141, 161, 250)',
+                'rgb(170, 181, 246)',
+                'rgb(195, 205, 252)',
+                'rgb(45, 59, 190)'
+            ]
+        };
 
-        const chart = new Chart(ctx, {
+        const createChart = ({
+            id,
+            type,
+            labels,
+            data,
+            label,
+            customColors = chartColors,
+            showLegend = true,
+            options = {}
+        }) => {
+            const canvas = document.getElementById(id);
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            new Chart(ctx, {
+                type,
+                data: {
+                    labels,
+                    datasets: [{
+                        label,
+                        data,
+                        backgroundColor: customColors.background,
+                        borderColor: customColors.border,
+                        borderWidth: 1,
+                        fill: type === 'radar',
+                        tension: type === 'line' ? 0.1 : undefined,
+                        hoverOffset: type === 'pie' || type === 'doughnut' ? 6 : undefined,
+                        pointBackgroundColor: type === 'radar' ? customColors.border :
+                            undefined
+                    }]
+                },
+                options: Object.assign({
+                    responsive: true,
+                    scales: type === 'bar' || type === 'line' ? {
+                        y: {
+                            beginAtZero: true
+                        }
+                    } : {},
+                    plugins: {
+                        legend: {
+                            display: showLegend,
+                            position: type === 'pie' || type === 'doughnut' || type ===
+                                'radar' ? 'bottom' : 'top'
+                        }
+                    },
+                    elements: type === 'radar' ? {
+                        line: {
+                            borderWidth: 2
+                        }
+                    } : {}
+                }, options)
+            });
+        };
+
+        createChart({
+            id: 'lineChart',
             type: 'line',
-            data: {
-                labels: {!! json_encode($salesData->pluck('month')) !!},
-                datasets: [{
-                    label: 'Ingresos',
-                    data: {!! json_encode($salesData->pluck('total')) !!},
-                    fill: false,
-                    borderColor: 'rgb(65, 84, 241)',
-                    tension: 0.1
-                }]
-            },
+            labels: {!! json_encode($salesData->pluck('month')) !!},
+            data: {!! json_encode($salesData->pluck('total')) !!},
+            label: 'Ingresos',
             options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
+                fill: false
             }
         });
-    });
 
-    document.addEventListener("DOMContentLoaded", () => {
-        const ctxBar = document.getElementById('barChart').getContext('2d');
-
-        new Chart(ctxBar, {
+        createChart({
+            id: 'barChart',
             type: 'bar',
-            data: {
-                labels: {!! json_encode($countryLabels) !!},
-                datasets: [{
-                    label: 'Ventas por País',
-                    data: {!! json_encode($countryValues) !!},
-                    backgroundColor: [
-                        'rgba(65, 84, 241, 0.7)',
-                        'rgba(78, 94, 243, 0.7)',
-                        'rgba(109, 117, 242, 0.7)',
-                        'rgba(141, 161, 250, 0.7)',
-                        'rgba(170, 181, 246, 0.7)',
-                        'rgba(195, 205, 252, 0.7)',
-                        'rgba(45, 59, 190, 0.7)'
-                    ],
-                    borderColor: [
-                        'rgb(65, 84, 241)',
-                        'rgb(78, 94, 243)',
-                        'rgb(109, 117, 242)',
-                        'rgb(141, 161, 250)',
-                        'rgb(170, 181, 246)',
-                        'rgb(195, 205, 252)',
-                        'rgb(45, 59, 190)'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
+            labels: {!! json_encode($countryLabels) !!},
+            data: {!! json_encode($countryValues) !!},
+            label: 'Ventas por País'
         });
-    });
 
-    document.addEventListener("DOMContentLoaded", () => {
-        const ctxPie = document.getElementById('pieChart').getContext('2d');
-
-        new Chart(ctxPie, {
+        createChart({
+            id: 'pieChart',
             type: 'pie',
-            data: {
-                labels: {!! json_encode($productLabels) !!},
-                datasets: [{
-                    label: 'Unidades vendidas',
-                    data: {!! json_encode($productValues) !!},
-                    backgroundColor: [
-                        'rgba(65, 84, 241, 0.6)',
-                        'rgba(90, 92, 245, 0.6)',
-                        'rgba(118, 136, 246, 0.6)',
-                        'rgba(167, 180, 250, 0.6)',
-                        'rgba(184, 193, 255, 0.6)'
-                    ],
-                    hoverOffset: 6
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom'
-                    }
-                }
+            labels: {!! json_encode($productLabels) !!},
+            data: {!! json_encode($productValues) !!},
+            label: 'Unidades vendidas',
+            customColors: {
+                background: [
+                    'rgba(65, 84, 241, 0.6)',
+                    'rgba(90, 92, 245, 0.6)',
+                    'rgba(118, 136, 246, 0.6)',
+                    'rgba(167, 180, 250, 0.6)',
+                    'rgba(184, 193, 255, 0.6)'
+                ],
+                border: []
             }
         });
-    });
 
-    document.addEventListener("DOMContentLoaded", () => {
-        const ctx = document.getElementById('doughnutChart').getContext('2d');
-
-        new Chart(ctx, {
+        createChart({
+            id: 'doughnutChart',
             type: 'doughnut',
-            data: {
-                labels: {!! json_encode($userLabels) !!},
-                datasets: [{
-                    label: 'Cantidad de ventas',
-                    data: {!! json_encode($userValues) !!},
-                    backgroundColor: [
-                        'rgba(65, 84, 241, 0.7)',
-                        'rgba(78, 94, 243, 0.7)',
-                        'rgba(109, 117, 242, 0.7)',
-                        'rgba(141, 161, 250, 0.7)',
-                        'rgba(170, 181, 246, 0.7)'
-                    ],
-                    borderColor: [
-                        'rgb(65, 84, 241)',
-                        'rgb(78, 94, 243)',
-                        'rgb(109, 117, 242)',
-                        'rgb(141, 161, 250)',
-                        'rgb(170, 181, 246)'
-                    ],
-                    borderWidth: 1,
-                    hoverOffset: 6
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom'
-                    }
-                }
-            }
+            labels: {!! json_encode($userLabels) !!},
+            data: {!! json_encode($userValues) !!},
+            label: 'Cantidad de ventas'
         });
-    });
 
-    document.addEventListener("DOMContentLoaded", () => {
-        new Chart(document.querySelector('#barChart2'), {
+        createChart({
+            id: 'barChart2',
             type: 'bar',
-            data: {
-                labels: {!! json_encode($supplierLabels) !!},
-                datasets: [{
-                    label: 'Cantidad de productos',
-                    data: {!! json_encode($supplierValues) !!},
-                    backgroundColor: [
-                        'rgba(65, 84, 241, 0.7)',
-                        'rgba(78, 94, 243, 0.7)',
-                        'rgba(109, 117, 242, 0.7)',
-                        'rgba(141, 161, 250, 0.7)',
-                        'rgba(170, 181, 246, 0.7)'
-                    ],
-                    borderColor: [
-                        'rgb(65, 84, 241)',
-                        'rgb(78, 94, 243)',
-                        'rgb(109, 117, 242)',
-                        'rgb(141, 161, 250)',
-                        'rgb(170, 181, 246)'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                }
-            }
+            labels: {!! json_encode($supplierLabels) !!},
+            data: {!! json_encode($supplierValues) !!},
+            label: 'Cantidad de productos',
+            showLegend: false
         });
-    });
 
-    document.addEventListener("DOMContentLoaded", () => {
-        new Chart(document.querySelector('#barChart3'), {
+        createChart({
+            id: 'barChart3',
             type: 'bar',
-            data: {
-                labels: {!! json_encode($customerLabels) !!},
-                datasets: [{
-                    label: 'Cantidad de ventas',
-                    data: {!! json_encode($customerValues) !!},
-                    backgroundColor: [
-                        'rgba(65, 84, 241, 0.7)',
-                        'rgba(78, 94, 243, 0.7)',
-                        'rgba(109, 117, 242, 0.7)',
-                        'rgba(141, 161, 250, 0.7)',
-                        'rgba(170, 181, 246, 0.7)'
-                    ],
-                    borderColor: [
-                        'rgb(65, 84, 241)',
-                        'rgb(78, 94, 243)',
-                        'rgb(109, 117, 242)',
-                        'rgb(141, 161, 250)',
-                        'rgb(170, 181, 246)'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                }
-            }
+            labels: {!! json_encode($customerLabels) !!},
+            data: {!! json_encode($customerValues) !!},
+            label: 'Cantidad de ventas',
+            showLegend: false
         });
-    });
-</script>
 
-<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        new ApexCharts(document.querySelector("#barChart3"), {
-            series: [{
-                name: 'Cantidad de ventas',
-                data: {!! json_encode($customerValues) !!}
-            }],
-            chart: {
-                type: 'bar',
-                height: 350
-            },
-            plotOptions: {
-                bar: {
-                    borderRadius: 4,
-                    horizontal: true,
+        const radarChart = document.getElementById('radarChart')?.getContext('2d');
+        if (radarChart) {
+            new Chart(radarChart, {
+                type: 'radar',
+                data: {
+                    labels: {!! json_encode($radarLabels) !!},
+                    datasets: [{
+                            label: 'Ventas sin RTN',
+                            data: {!! json_encode($radarSinRTN) !!},
+                            fill: true,
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            borderColor: 'rgb(255, 99, 132)',
+                            pointBackgroundColor: 'rgb(255, 99, 132)'
+                        },
+                        {
+                            label: 'Ventas con RTN',
+                            data: {!! json_encode($radarConRTN) !!},
+                            fill: true,
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            borderColor: 'rgb(54, 162, 235)',
+                            pointBackgroundColor: 'rgb(54, 162, 235)'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    elements: {
+                        line: {
+                            borderWidth: 2
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    },
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
                 }
-            },
-            dataLabels: {
-                enabled: false
-            },
-            xaxis: {
-                categories: {!! json_encode($customerLabels) !!}
-            },
-            colors: ['#4154F1']
-        }).render();
+            });
+        }
     });
 </script>
