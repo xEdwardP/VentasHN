@@ -186,6 +186,13 @@ class DashboardController extends Controller
 $categoryProductLabels = $productByCategory->pluck('category');
 $categoryProductValues = $productByCategory->pluck('total');
 
+$stockProducts = Product::select('name', 'quantity')
+    ->orderByDesc('quantity')
+    ->limit(10) 
+    ->get();
+
+$stockLabels = $stockProducts->pluck('name');
+$stockValues = $stockProducts->pluck('quantity');
 
 //
 
@@ -203,6 +210,8 @@ $categoryProductValues = $productByCategory->pluck('total');
             'startDate',
             'endDate'
         ))->with([
+              'stockLabels' => $stockLabels,
+    'stockValues' => $stockValues,
             'countryLabels' => $countrySales->pluck('country'),
             'countryValues' => $countrySales->pluck('total'),
             'productLabels' => $topProductsData->pluck('product'),

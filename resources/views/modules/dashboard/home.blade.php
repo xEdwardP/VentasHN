@@ -330,7 +330,14 @@
               </div>
             </div>
             </div>
-
+            <div class="col-md-6">
+    <div class="card">
+        <div class="card-header">Stock por producto</div>
+        <div class="card-body">
+            <canvas id="stockChart" height="300"></canvas>
+        </div>
+    </div>
+</div>
 
           
         </section>
@@ -503,6 +510,9 @@
         });
 
 
+   
+
+
         //
 
         createChart({
@@ -564,5 +574,35 @@ data: {!! json_encode($categoryProductValues) !!},
                 }
             });
         }
+
+        //
+         const stockLabels = @json($stockLabels);
+    const stockValues = @json($stockValues);
+
+    const ctxStock = document.getElementById('stockChart').getContext('2d');
+    new Chart(ctxStock, {
+        type: 'bar',
+        data: {
+            labels: stockLabels,
+            datasets: [{
+                label: 'Cantidad en stock',
+                data: stockValues,
+                backgroundColor: 'rgba(40, 167, 69, 0.6)', 
+                borderColor: 'rgba(40, 167, 69, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            indexAxis: 'y', 
+            responsive: true,
+            scales: {
+                x: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+
     });
 </script>
