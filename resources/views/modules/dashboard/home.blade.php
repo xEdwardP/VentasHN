@@ -311,15 +311,28 @@
             </div>
 
             <div class="row">
-                <div class="col-lg-6">
-                    <div class="card">
+                <div class="col-lg-6 d-flex">
+                    <div class="card flex-fill">
                         <div class="card-body">
                             <h5 class="card-title">Categorías más vendidas (RTN vs Sin RTN)</h5>
                             <canvas id="radarChart" style="max-height: 400px;"></canvas>
                         </div>
                     </div>
                 </div>
+
+                  {{--  --}}
+            <div class="col-lg-6 d-flex">
+              <div class="card flex-fill">
+                <div class="card-body">
+                     <h5 class="card-title">Cantidad de productos por categoría</h5>
+                  <canvas id="categoryChart" style="max-height: 400px;"></canvas>
+               </div>
+              </div>
             </div>
+            </div>
+
+
+          
         </section>
     </main>
 
@@ -488,6 +501,21 @@
             label: 'Cantidad de ventas',
             showLegend: false
         });
+
+
+        //
+
+        createChart({
+    id: 'categoryChart',
+    type: 'bar',
+labels: {!! json_encode($categoryProductLabels) !!},
+data: {!! json_encode($categoryProductValues) !!},
+    label: 'Cantidad de productos',
+    showLegend: false
+});
+
+
+
 
         const radarChart = document.getElementById('radarChart')?.getContext('2d');
         if (radarChart) {

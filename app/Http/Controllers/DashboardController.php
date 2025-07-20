@@ -174,6 +174,22 @@ class DashboardController extends Controller
             $dataConRTN[] = $conRTN[$id] ?? 0;
         }
 
+
+        //
+        $productByCategory = DB::table('categories')
+    ->join('products', 'categories.id', '=', 'products.category_id')
+    ->select('categories.name as category', DB::raw('COUNT(products.id) as total'))
+    ->groupBy('categories.name')
+    ->orderByDesc('total')
+    ->get();
+
+$categoryProductLabels = $productByCategory->pluck('category');
+$categoryProductValues = $productByCategory->pluck('total');
+
+
+//
+
+
         return view("modules.dashboard.home", compact(
             'title',
             'totalSales',
@@ -200,6 +216,10 @@ class DashboardController extends Controller
             'radarLabels' => $labels,
             'radarSinRTN' => $dataSinRTN,
             'radarConRTN' => $dataConRTN,
+
+            //
+             'categoryProductLabels' => $categoryProductLabels,
+             'categoryProductValues' => $categoryProductValues,
         ]);
     }
 }
