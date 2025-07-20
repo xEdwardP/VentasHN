@@ -311,11 +311,40 @@
             </div>
 
             <div class="row">
-                <div class="col-lg-6">
-                    <div class="card">
+                <div class="col-lg-6 d-flex">
+                    <div class="card flex-fill">
                         <div class="card-body">
                             <h5 class="card-title">Categorías más vendidas (RTN vs Sin RTN)</h5>
                             <canvas id="radarChart" style="max-height: 400px;"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 d-flex">
+                    <div class="card flex-fill">
+                        <div class="card-body">
+                            <h5 class="card-title">Cantidad de productos por categoría</h5>
+                            <canvas id="categoryChart" style="max-height: 400px;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">Stock por producto</div>
+                        <div class="card-body">
+                            <canvas id="stockChart" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">Más vendido por categoría</div>
+                        <div class="card-body">
+                            <canvas id="itemCategoryChart" height="300"></canvas>
                         </div>
                     </div>
                 </div>
@@ -489,6 +518,42 @@
             showLegend: false
         });
 
+        createChart({
+            id: 'categoryChart',
+            type: 'bar',
+            labels: {!! json_encode($categoryProductLabels) !!},
+            data: {!! json_encode($categoryProductValues) !!},
+            label: 'Cantidad de productos',
+            showLegend: false
+        });
+
+        const stockLabels = @json($stockLabels);
+        const stockValues = @json($stockValues);
+
+        const ctxStock = document.getElementById('stockChart').getContext('2d');
+        new Chart(ctxStock, {
+            type: 'bar',
+            data: {
+                labels: stockLabels,
+                datasets: [{
+                    label: 'Cantidad en stock',
+                    data: stockValues,
+                    backgroundColor: 'rgba(65, 84, 241, 0.7)',
+                    borderColor: 'rgb(65, 84, 241)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                scales: {
+                    x: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
         const radarChart = document.getElementById('radarChart')?.getContext('2d');
         if (radarChart) {
             new Chart(radarChart, {
@@ -536,5 +601,41 @@
                 }
             });
         }
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const itemCategoryLabels = @json($itemCategoryLabels);
+        const itemCategoryCounts = @json($itemCategoryCounts);
+
+        const ctx = document.getElementById('itemCategoryChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: itemCategoryLabels,
+                datasets: [{
+                    label: 'Unidades vendidas',
+                    data: itemCategoryCounts,
+                    backgroundColor: 'rgba(65, 84, 241, 0.7)',
+                    borderColor: 'rgb(65, 84, 241)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                scales: {
+                    x: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
     });
 </script>

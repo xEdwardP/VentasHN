@@ -174,6 +174,42 @@ class DashboardController extends Controller
             $dataConRTN[] = $conRTN[$id] ?? 0;
         }
 
+        $productByCategory = DB::table('categories')
+            ->join('products', 'categories.id', '=', 'products.category_id')
+            ->select('categories.name as category', DB::raw('COUNT(products.id) as total'))
+            ->groupBy('categories.name')
+            ->orderByDesc('total')
+            ->get();
+
+        $categoryProductLabels = $productByCategory->pluck('category');
+        $categoryProductValues = $productByCategory->pluck('total');
+
+        $stockProducts = Product::select('name', 'quantity')
+            ->orderByDesc('quantity')
+            ->limit(10)
+            ->get();
+
+        $stockLabels = $stockProducts->pluck('name');
+        $stockValues = $stockProducts->pluck('quantity');
+
+        $popularItemsByCategory = DB::table('sale_details')
+            ->join('products', 'sale_details.product_id', '=', 'products.id')
+            ->join('categories', 'products.category_id', '=', 'categories.id')
+            ->select('categories.name as category', 'products.name as item', DB::raw('SUM(sale_details.quantity) as total'))
+            ->groupBy('categories.name', 'products.name')
+            ->orderByDesc('total')
+            ->get();
+
+        $groupedItems = $popularItemsByCategory->groupBy('category');
+        $itemCategoryNames = [];
+        $itemCategoryTotals = [];
+
+        foreach ($groupedItems as $category => $items) {
+            $topProduct = $items->sortByDesc('total')->first();
+            $itemCategoryNames[] = "{$category}: {$topProduct->item}";
+            $itemCategoryTotals[] = $topProduct->total;
+        }
+
         return view("modules.dashboard.home", compact(
             'title',
             'totalSales',
@@ -200,6 +236,12 @@ class DashboardController extends Controller
             'radarLabels' => $labels,
             'radarSinRTN' => $dataSinRTN,
             'radarConRTN' => $dataConRTN,
+            'categoryProductLabels' => $categoryProductLabels,
+            'categoryProductValues' => $categoryProductValues,
+            'stockLabels' => $stockLabels,
+            'stockValues' => $stockValues,
+            'itemCategoryLabels' => $itemCategoryNames,
+            'itemCategoryCounts' => $itemCategoryTotals,
         ]);
     }
 }
